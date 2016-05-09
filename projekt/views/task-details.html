@@ -1,0 +1,281 @@
+<div class="row top-menu">
+    <div class="col-xs-12 clearfix">
+        <a class="top-menu-link" href="/#/tasks"><i class="fa fa-angle-double-left"></i> Powrót do listy zleceń</a>
+
+        <a href="#" ng-hide="taskNotFound || !task.id" ng-click="deleteTask()" class="btn btn-danger pull-right">Usuń to zlecenie</a>
+
+    </div>
+</div>
+
+<div class="alert alert-danger" ng-show="taskNotFound">
+    <strong>Ups..</strong> Takie zlecenie nie zostało znalezione
+</div>
+
+<div class="row" ng-hide="taskNotFound">
+    <div class="col-xs-12 col-lg-6">
+        <div class="flat-panel">
+            <div class="flat-panel-header">
+                <h3 ng-show="!task.id" class="flat-panel-heading">Dodaj nowe zlecenie</h3>
+                <h3 ng-show="task.id" class="flat-panel-heading">Dane zlecenia</h3>
+            </div>
+            <div class="flat-panel-body">
+
+                <form name="tasksForm" ng-submit="saveTaskData()" class="form-horizontal" novalidate>
+                    <div ng-show="showSaveTaskFormMsg" class="alert alert-success">
+                        <strong>Sukces!</strong> Dane zlecenia zostały zapisane!
+                    </div>
+
+                    <div ng-show="taskForm.$submitted && taskForm.$invalid" class="alert alert-warning">
+                        <strong>Uwaga!</strong> Popraw błędy formularza!
+                    </div>
+
+                    <div class="form-group">
+                        <label for="task-name" class="col-lg-2 col-sm-2 col-xs-12 control-label">Nazwa zlecenia</label>
+
+                        <div class="col-lg-10 col-sm-10 col-xs-12">
+                            <input ng-model="task.task_name" type="text" id="task-name" name="taskName" class="form-control" required ng-maxlength="100">
+
+                            <i class="glyphicon glyphicon-asterisk"></i>
+
+                            <div ng-messages="tasksForm.taskName.$error" ng-show="tasksForm.$submitted || tasksForm.taskName.$touched">
+                                <span ng-message="required" class="help-block">Nazwa zlecenia jest wymagana</span>
+                                <span ng-message="maxlength" class="help-block">Nazwa zlecenia nie może być dłuższa niż 100 znaków</span>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="client-name" class="col-lg-2 col-sm-2 col-xs-12 control-label required">Osoba zlecająca</label>
+
+                        <div class="col-lg-10 col-sm-10 col-xs-12">
+                            <input ng-model="task.client_name" type="text" id="client-name" name="clientName" class="form-control" placeholder="Dane osoby zlecającej" required ng-maxlength="50">
+
+                            <i class="glyphicon glyphicon-asterisk"></i>
+
+                           <div ng-messages="tasksForm.clientName.$error" ng-show="tasksForm.$submitted || tasksForm.clientName.$touched">
+                                <span ng-message="required" class="help-block">Musisz podać dane osoby zlecającej</span>
+                                <span ng-message="maxlength" class="help-block">Imię i nazwisko nie może być dłuższe niż 50 znaków</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="task-phone" class="col-lg-2 col-sm-2 col-xs-12 control-label required">Telefon</label>
+
+                       <div class="col-lg-10 col-sm-10 col-xs-12">
+                            <input ng-model="task.contact_phone" type="text" id="task-phone" name="taskPhone" class="form-control" placeholder="Telefon do osoby kontaktowej" required pattern="\d{9}">
+
+                            <i class="glyphicon glyphicon-asterisk"></i>
+
+                            <div ng-messages="tasksForm.taskPhone.$error" ng-show="tasksForm.$submitted || tasksForm.taskPhone.$touched">
+                                <span ng-message="required" class="help-block">Musisz podać telefon kontaktowy</span>
+                                <span ng-message="pattern" class="help-block">Podaj numer telefonu w formacie: XXXXXXXXX</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="task-email" class="col-lg-2 col-sm-2 col-xs-12 control-label required">E-mail</label>
+
+                         <div class="col-lg-10 col-sm-10 col-xs-12">
+                            <input ng-model="task.contact_email" type="email" id="task-email" name="taskEmail" class="form-control" placeholder="e-mail do osoby kontaktowej" required>
+
+                            <i class="glyphicon glyphicon-asterisk"></i>
+
+                            <div ng-messages="tasksForm.taskEmail.$error" ng-show="tasksForm.$submitted || tasksForm.taskEmail.$touched">
+                                <span ng-message="required" class="help-block">Adres e-mail jest wymagany</span>
+                                <span ng-message="email" class="help-block">Podałeś niepoprawny adres e-mail</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="account-manager" class="col-lg-2 col-sm-2 col-xs-12 control-label required">Opiekun klienta</label>
+
+                        <div class="col-lg-10 col-sm-10 col-xs-12">
+                            <select ng-model="task.user_id" id="account-manager" class="form-control">
+                                <option ng-repeat="user in users" value="{{ user.id }}">{{ user.name }}</option>
+                            </select>
+
+                            <i class="glyphicon glyphicon-asterisk"></i>
+
+                            <div ng-messages="tasksForm.accountManager.$error" ng-show="tasksForm.$submitted || tasksForm.accountManager.$touched">
+                                <span ng-message="required" class="help-block">Musisz wybrać opiekuna klienta</span>
+                            </div>
+                        </div>
+                    </div>
+
+                   <div class="form-group">
+                        <label for="status" class="col-lg-2 col-sm-2 col-xs-12 control-label required">Status</label>
+
+                        <div class="col-lg-10 col-sm-10 col-xs-12">
+                            <select ng-model="task.status_id" id="status" class="form-control">
+                                <option ng-repeat="status in status" value="{{ status.id }}">{{ status.name }}</option>
+                            </select>
+
+                            <i class="glyphicon glyphicon-asterisk"></i>
+
+                            <div ng-messages="tasksForm.status.$error" ng-show="tasksForm.$submitted || tasksForm.status.$touched">
+                                <span ng-message="required" class="help-block">Musisz wybrać status</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes" class="col-lg-2 col-sm-2 col-xs-12 control-label required">Notatki</label>
+
+                        <div class="col-lg-10 col-sm-10 col-xs-12">
+                            <textarea ng-model="task.notes" id="notes" name="notes" class="form-control" placeholder="Dodatkowe informacje o zleceniu" ng-maxlength="500"></textarea>
+
+                            <div ng-messages="tasksForm.notes.$error" ng-show="tasksForm.$submitted || tasksForm.notes.$touched">
+                                <span ng-message="maxlength" class="help-block">Notatka nie może mieć więcej niż 500 znaków</span>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="form-group">
+                        <label for="task-date_start" class="col-lg-2 col-sm-2 col-xs-12 control-label required">Data przyjęcia zlecenia</label>
+
+                         <div class="col-lg-10 col-sm-10 col-xs-12">
+                            <input ng-model="task.start_date" type="text" id="task-date_start" name="taskDate_start" class="form-control" placeholder="rrrr-mm-dd hh:mm:ss" required pattern="\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}">
+
+                            <i class="glyphicon glyphicon-asterisk"></i>
+
+                            <div ng-messages="tasksForm.taskDate_start.$error" ng-show="tasksForm.$submitted || tasksForm.taskDate_start.$touched">
+                                <span ng-message="required" class="help-block">Data przyjęcia zlecenia jest wymagana</span>
+                                <span ng-message="pattern" class="help-block">Data musi być w formacie rrrr-mm-dd hh:mm:ss</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-date_end" class="col-lg-2 col-sm-2 col-xs-12 control-label required">Deadline</label>
+
+                         <div class="col-lg-10 col-sm-10 col-xs-12">
+                            <input ng-model="task.end_date" type="text" id="task-date_end" name="taskDate_end" class="form-control" placeholder="rrrr-mm-dd hh:mm:ss" required pattern="\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}">
+
+                            <i class="glyphicon glyphicon-asterisk"></i>
+
+                            <div ng-messages="tasksForm.taskDate_end.$error" ng-show="tasksForm.$submitted || tasksForm.taskDate_end.$touched">
+                                <span ng-message="required" class="help-block">Data przewidywanego ukończenia zlecenia jest wymagana</span>
+                                <span ng-message="pattern" class="help-block">Data musi być w formacie rrrr-mm-dd hh:mm:ss</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-10 col-sm-10 col-xs-12 col-lg-offset-2 col-sm-offset-2">
+                            <button class="btn btn-primary">Zapisz</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+        <div class="flat-panel">
+            <div class="flat-panel-header">
+                <h3 class="flat-panel-heading">Dodaj nowy wpis do tego zlecenia</h3>
+            </div>
+            <div class="flat-panel-body">
+
+                <form name="eventForm" ng-submit="addEventTimeline()" class="form-horizontal" novalidate>
+                    <div ng-show="newEventCreatedMsg" class="alert alert-success">
+                        <strong>Sukces!</strong> Nowy wpis został dodany do zlecenia!
+                    </div>
+
+                    <div ng-show="eventForm.$submitted && eventForm.$invalid" class="alert alert-warning">
+                        <strong>Uwaga!</strong> Popraw błędy formularza!
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contact-user" class="col-lg-2 col-sm-2 col-xs-12 control-label">Kto dokonuje wpisu</label>
+
+                        <div class="col-lg-10 col-sm-10 col-xs-12">
+                            <select id="contact-user" name="timelineUser" ng-model="timelineEvent.user_id" class="form-control" required>
+                                <option ng-repeat="user in users" value="{{ user.id }}">{{ user.name }}</option>
+                            </select>
+
+                            <i class="glyphicon glyphicon-asterisk"></i>
+
+                            <div ng-messages="eventForm.timelineUser.$error" ng-show="eventForm.$submitted || eventForm.timelineUser.$touched">
+                                <span ng-message="required" class="help-block">Wybierz siebie</span>
+                            </div>
+                        </div>
+                    </div>
+
+                   <div class="form-group">
+                        <label for="realization-type" class="col-lg-2 col-sm-2 col-xs-12 control-label">Status zlecenia</label>
+
+                        <div class="col-lg-10 col-sm-10 col-xs-12">
+                            <select id="realization-type" name="realizationType" ng-model="timelineEvent.realization_type" class="form-control" required>
+                                <option ng-repeat="type in eventTypes" value="{{ type.value }}">{{ type.name }}</option>
+                            </select>
+
+                            <i class="glyphicon glyphicon-asterisk"></i>
+
+                            <div ng-messages="eventForm.realizationType.$error" ng-show="eventForm.$submitted || eventForm.realizationType.$touched">
+                                <span ng-message="required" class="help-block">Musisz wybrać aktualny </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="control-date" class="col-lg-2 col-sm-2 col-xs-12 control-label required">Data wpisu</label>
+
+                        <div class="col-lg-10 col-sm-10 col-xs-12">
+                            <input type="text" id="control-date" name="controlDate" ng-model="timelineEvent.control_date" class="form-control" placeholder="rrrr-mm-dd hh:mm:ss" required pattern="\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}">
+
+                            <i class="glyphicon glyphicon-asterisk"></i>
+
+                            <div ng-messages="eventForm.controlDate.$error" ng-show="eventForm.$submitted || eventForm.controlDate.$touched">
+                                <span ng-message="required" class="help-block">Podaj datę wpisu</span>
+                                <span ng-message="pattern" class="help-block">Data musi być w formacie rrrr-mm-dd hh:mm:ss</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="event-notes" class="col-lg-2 col-sm-2 col-xs-12 control-label required">Notatki</label>
+
+                        <div class="col-lg-10 col-sm-10 col-xs-12">
+                            <textarea id="event-notes" name="eventNotes" ng-model="timelineEvent.notes" class="form-control" placeholder="np. ustalenia, potrzeby, kryteria decyzyjne" ng-maxlength="500" required></textarea>
+
+                            <i class="glyphicon glyphicon-asterisk"></i>
+
+                            <div ng-messages="eventForm.eventNotes.$error" ng-show="eventForm.$submitted || eventForm.eventNotes.$touched">
+                                <span ng-message="required" class="help-block">Notatka jest wymagana</span>
+                                <span ng-message="maxlength" class="help-block">Notatka nie może mieć więcej niż 500 znaków</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-10 col-sm-10 col-xs-12 col-lg-offset-2 col-sm-offset-2">
+                            <button class="btn btn-primary">Dodaj wpis</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <hr>
+
+        <p ng-show="timeline.length == 0" class="emtpy-timeline">Brak aktywności załogi dla tego zlecenia</p>
+
+        <ul class="timeline" ng-show="timeline.length > 0">
+            <li ng-repeat="event in timeline">
+                <i class="fa fa-{{event.realization_type}} {{ timelineHelper(event.realization_type, 'color') }}"></i>
+                <span class="date">{{event.control_date | date : 'dd-MMM'}}</span>
+
+                <div class="content">
+                    <p>
+                        <strong>{{event.user_name}}</strong> - {{ timelineHelper(event.realization_type, 'message') }} dnia {{event.control_date | date : 'dd MMMM yyyy o H:mm'}}
+                    </p>
+
+                    <blockquote>
+                        <p>{{event.notes}}</p>
+                    </blockquote>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,116 @@
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="flat-panel">
+
+                                <div class="flat-panel-header">
+                                    <h4 class="flat-panel-heading">Wyszukiwanie i filtracja</h4>
+                                </div>
+                                <div class="flat-panel-body">
+                                    <div class="form-horizontal">
+                                        <div class="row">
+                                            <div class="col-xs-12 col-md-4">
+                                                <div class="form-group">
+                                                    <label for="filter-company-name" class="col-sm-3 col-xs-12 control-label">Wyszukaj</label>
+
+                                                    <div class="col-sm-9 col-xs-12">
+                                                        <input id="filter-company-name" ng-model="filterBy.task_name" type="text" class="form-control" placeholder="Podaj nazwę zlecenia">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-xs-12 col-md-4">
+                                                <div class="form-group">
+                                                    <label for="filter-sector" class="col-sm-3 col-xs-12 control-label required">Status</label>
+
+                                                    <div class="col-sm-9 col-xs-12">
+                                                        <select ng-model="filterBy.status_id" id="filter-sector" class="form-control" >
+                                                            <option value=""></option>
+                                                            <option ng-repeat="status in status" value="{{ status.id }}">{{ status.name }}</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-xs-12 col-md-4">
+                                                <div class="form-group">
+                                                    <label for="filter-manager" class="col-sm-3 col-xs-12 control-label required">Wykonawca</label>
+
+                                                    <div class="col-sm-9 col-xs-12">
+                                                        <select ng-model="filterBy.user_id" id="filter-manager" class="form-control">
+                                                            <option value=""></option>
+                                                            <option ng-repeat="user in users" value="{{ user.id }}">{{ user.name }}</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="flat-panel">
+                                <div class="flat-panel-header">
+                                    <h3 class="flat-panel-heading">
+                                        Zlecenia
+
+                                        <a href="#" class="label label-success pull-right" title="Dodaj nowego klienta"><i class="glyphicon glyphicon-plus"></i></a>
+                                    </h3>
+                                </div>
+                                <div class="flat-panel-body">
+                                    <table class="no-border table table-striped table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center" style="width: 70px;">
+                                                    <span ng-click="changeOrder('id')" class="sort-btn">
+                                                        ID
+                                                        <i ng-show="isOrderedBy('id')" class="glyphicon" ng-class="{'glyphicon-chevron-up': !isOrderedReverse(),'glyphicon-chevron-down': isOrderedReverse()}"></i>
+                                                    </span>
+                                                </th>
+                                                <th>
+                                                    <span ng-click="changeOrder('task_name')" class="sort-btn">
+                                                        Nazwa zlecenia
+                                                        <i ng-show="isOrderedBy('task_name')" class="glyphicon" ng-class="{'glyphicon-chevron-up': !isOrderedReverse(),'glyphicon-chevron-down': isOrderedReverse()}"></i>
+                                                    </span>
+                                                </th>
+                                                <th class="hidden-xs">
+                                                    <span ng-click="changeOrder('status_name')" class="sort-btn">
+                                                        Status zlecenia
+                                                        <i ng-show="isOrderedBy('status_name')" class="glyphicon" ng-class="{'glyphicon-chevron-up': !isOrderedReverse(),'glyphicon-chevron-down': isOrderedReverse()}"></i>
+                                                    </span>
+                                                </th>
+                                                <th class="hidden-xs">
+                                                    <span ng-click="changeOrder('user_name')" class="sort-btn">
+                                                        Wykonawca zlecenia
+                                                        <i ng-show="isOrderedBy('user_name')" class="glyphicon" ng-class="{'glyphicon-chevron-up': !isOrderedReverse(),'glyphicon-chevron-down': isOrderedReverse()}"></i>
+                                                    </span>
+                                                </th>
+                                                <th class="hidden-xs">
+                                                    <span ng-click="changeOrder('end_date')" class="sort-btn">
+                                                        Data końcowa zlecenia
+                                                        <i ng-show="isOrderedBy('end_date')" class="glyphicon" ng-class="{'glyphicon-chevron-up': !isOrderedReverse(),'glyphicon-chevron-down': isOrderedReverse()}"></i>
+                                                    </span>
+                                                </th>
+                                                <th class="text-center">Akcje</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="no-border">
+                                             <tr ng-repeat="task in tasks | filter : filterBy | orderBy: orderByColumn : orderByDir">
+                                                <td class="text-center">{{ task.id }}</td>
+                                                <td>{{task.task_name}}</td>
+                                                <td class="hidden-xs">{{task.status_name}}</td>
+                                                <td class="hidden-xs">{{task.user_name}}</td>
+                                                <td class="hidden-xs">{{task.end_date}}</td>
+                                                <td class="text-center"><a href="/#/tasks/{{ task.id }}" class="label label-primary">Szczegóły</a></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
